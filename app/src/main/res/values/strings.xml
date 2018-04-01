@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BBC Sport Today</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="large_text">
+        no description for this news
+    </string>
+    <string name="publishedAt">published At :</string>
+    <string name="URL">More Details At :</string>
+    <string name="action_settings">Settings</string>
 </resources>

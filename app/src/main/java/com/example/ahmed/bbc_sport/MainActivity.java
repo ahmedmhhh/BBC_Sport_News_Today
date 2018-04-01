@@ -39,44 +39,9 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
+        JSON json = new JSON(news,getApplicationContext(),recyclerView);
+        json.getData();
 
-        StringRequest newsRequest=new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-                    JSONArray jsonArray = object.getJSONArray("articles");
-                     news = new ArrayList<>();
-                    for (int i = 0; i<jsonArray.length();i++){
-                        JSONObject currentObject=jsonArray.getJSONObject(i);
-                        String title=currentObject.getString("title");
-                        String description=currentObject.getString("description");
-                        String publishedAt=currentObject.getString("publishedAt");
-                        String urlToImage=currentObject.getString("urlToImage");
-
-                        News newsObject=new News(title,description,urlToImage,publishedAt);
-                        news.add(newsObject);
-                    }
-
-                }catch (Exception ex){
-                    Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG).show();
-                }
-                NewsAdapter newsAdapter = new NewsAdapter(news);
-                recyclerView.setAdapter(newsAdapter);
-
-            }
-        }, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),"Error On Your Network",Toast.LENGTH_LONG).show();
-            }
-        });
-        Volley.newRequestQueue(this).add(newsRequest);
 
     }
 }

@@ -1,23 +1,31 @@
 package com.example.ahmed.bbc_sport;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
+import static android.content.ContentValues.TAG;
 
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
+    private Context context;
     List <News> newsList;
 
-    public NewsAdapter(List<News> newsList) {
+
+    public NewsAdapter(List<News> newsList,Context context) {
         this.newsList = newsList;
+        this.context = context;
     }
 
     @Override
@@ -28,12 +36,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
     }
 
     @Override
-    public void onBindViewHolder(NewsHolder holder, int position) {
-        News news = newsList.get(position);
+    public void onBindViewHolder(NewsHolder holder, final int position) {
+        final News news = newsList.get(position);
         holder.newsTitle.setText(news.title);
-      //  holder.newsDesc.setText(news.description);
-       // holder.newsDate.setText(news.publishedAt);
+
         Picasso.with(holder.poster.getContext()).load(news.urlToImage).error(R.drawable.ic_launcher_background).into(holder.poster);
+        holder.poster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,DetailsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("title",news.title);
+                intent.putExtra("url",news.url);
+                intent.putExtra("publishedAt",news.publishedAt);
+                intent.putExtra("details",news.description);
+                intent.putExtra("poster",news.urlToImage);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -41,16 +61,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
         return newsList.size();
     }
 
+
     class NewsHolder extends RecyclerView.ViewHolder{
-        TextView newsTitle,newsDate,newsDesc;
+        TextView newsTitle;
         ImageView poster;
         public NewsHolder(View itemView) {
             super(itemView);
             newsTitle=(TextView)itemView.findViewById(R.id.newsTitleTXT);
-            newsDate = (TextView) itemView.findViewById(R.id.publishedAtTXT);
-            newsDesc = (TextView) itemView.findViewById(R.id.newsDesc);
-            poster = (ImageView) itemView.findViewById(R.id.newsposteIMG);
 
+            poster = (ImageView) itemView.findViewById(R.id.newsposteIMG);
         }
     }
 }
